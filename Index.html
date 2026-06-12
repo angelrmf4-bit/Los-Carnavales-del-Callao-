@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carnavales de El Callao - Experiencia Interactiva</title>
+    <style>
+        :root {
+            --oro: #FFD700;
+            --madama-azul: #0056B3;
+            --medio-pinto: #222222;
+            --diablo-rojo: #E60000;
+            --blanco: #FFFFFF;
+            --crema: #F9F6F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--crema);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--blanco);
+            padding: 20px;
+            border-bottom: 8px solid var(--oro);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+            color: var(--oro);
+        }
+
+        header p {
+            font-size: 1.3rem;
+            margin-top: 10px;
+            max-width: 600px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+        }
+
+        /* Navbar */
+        nav {
+            background-color: var(--medio-pinto);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--blanco);
+            padding: 15px 20px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--oro);
+            color: var(--medio-pinto);
+        }
+
+        /* Contenedor Principal */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: var(--blanco);
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--diablo-rojo);
+            border-bottom: 3px solid var(--oro);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Tarjetas de Personajes Interactivas */
+        .grid-personajes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--crema);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid var(--medio-pinto);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card.madama { border-top-color: var(--madama-azul); }
+        .card.diablo { border-top-color: var(--diablo-rojo); }
+        .card.medio-pinto { border-top-color: var(--medio-pinto); }
+        .card.minero { border-top-color: var(--oro); }
+
+        /* Modal para detalles de personajes */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--blanco);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Trivia Didáctica */
+        .trivia-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeeba);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid var(--oro);
+        }
+
+        .btn-opcion {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: var(--blanco);
+            border: 2px solid var(--oro);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            text-align: left;
+        }
+
+        .btn-opcion:hover {
+            background-color: var(--oro);
+            color: var(--medio-pinto);
+        }
+
+        #resultado-trivia {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Reproductor de Sonido Simulado */
+        .music-player {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #e9ecef;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .play-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .play-btn.playing {
+            background-color: #dc3545;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        footer {
+            background-color: var(--medio-pinto);
+            color: var(--blanco);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            nav a { padding: 10px 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabecera / Hero -->
+    <header>
+        <h1>Carnavales de El Callao</h1>
+        <p>¡Calipso, color y tradición centenaria! Explora la festividad más vibrante del estado Bolívar, Venezuela.</p>
+    </header>
+
+    <!-- Navegación -->
+    <nav>
+        <a href="#historia">Historia</a>
+        <a href="#patrimonio">Patrimonio</a>
+        <a href="#personajes">Personajes y Colores</a>
+        <a href="#musica">Música y Baile</a>
+        <a href="#trivia">Trivia Interactiva</a>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container">
+
+        <!-- Sección 1: Historia -->
+        <section id="historia">
+            <h2>Historia y Orígenes</h2>
+            <p>Los carnavales de El Callao se remontan a <strong>mediados del siglo XIX</strong> (hacia la década de 1870). La historia de este pueblo minero cambió radicalmente con la fiebre del oro, lo que atrajo a miles de inmigrantes de las Antillas Británicas y Francesas (Trinidad, Santa Lucía, Martinica), así como a europeos.</p>
+            <br>
+            <p>Estos trabajadores trajeron consigo sus lenguas (como el patois), sus costumbres culinarias y, fundamentalmente, sus cantos de plantación. Durante los días de asueto, se les permitía celebrar, naciendo así una fusión cultural única entre las raíces africanas, antillanas y la identidad venezolana.</p>
+        </section>
+
+        <!-- Sección 2: Patrimonio Cultural -->
+        <section id="patrimonio" style="background-color: #f1f8ff; border-left: 5px solid var(--madama-azul);">
+            <h2>Reconocimiento Mundial de la UNESCO</h2>
+            <p>El <strong>1 de diciembre de 2016</strong> es una fecha histórica para El Callao y toda Venezuela. En ese día, la UNESCO declaró formalmente a los Carnavales de El Callao como <strong>Patrimonio Cultural Inmaterial de la Humanidad</strong>.</p>
+            <br>
+            <blockquote>
+                <em>"Esta cadena de transmisión cultural que corre por las venas de las familias callaoenses resalta el espíritu de resistencia, la riqueza del mestizaje y el orgullo de un pueblo que canta su propia historia."</em>
+            </blockquote>
+        </section>
+
+        <!-- Sección 3: Personajes (Interactiva) -->
+        <section id="personajes">
+            <h2>Personajes, Temática y Colores</h2>
+            <p><em>Haz clic en cada tarjeta para descubrir la historia, rol y colores característicos de cada protagonista del carnaval:</em></p>
+
+            <div class="grid-personajes">
+                <div class="card madama" onclick="abrirModal('madama')">
+                    <h3>Las Madamas</h3>
+                    <p>🎨 Azul, amarillo, blanco, encajes.</p>
+                    <p><strong>Ver más ➔</strong></p>
+                </div>
+                <div class="card diablo" onclick="abrirModal('diablo')">
+                    <h3>Los Diablos</h3>
+                    <p>🎨 Rojo, negro y blanco.</p>
+                    <p><strong>Ver más ➔</strong></p>
+                </div>
+                <div class="card medio-pinto" onclick="abrirModal('medio-pinto')">
+                    <h3>Los Medio Pinto</h3>
+                    <p>🎨 Negro (carbón y melaza).</p>
+                    <p><strong>Ver más ➔</strong></p>
+                </div>
+                <div class="card minero" onclick="abrirModal('minero')">
+                    <h3>Los Mineros</h3>
+                    <p>🎨 Cascos, botas, herramientas.</p>
+                    <p><strong>Ver más ➔</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 4: Música y Ritmo -->
+        <section id="musica">
+            <h2>El Calipso de El Callao y el Baile</h2>
+            <p>El rey indiscutible de estas fiestas es el <strong>Calipso callaoense</strong>. A diferencia del calipso trinitario, este posee una fuerte base percutiva venezolana y se canta tanto en español como en inglés o patois.</p>
+            <br>
+            <p><strong>Instrumentos tradicionales:</strong> El Bumbac (tambor principal), los rallos, las maracas, las campanas y el cuatro venezolano.</p>
+            
+            <!-- Reproductor interactivo simulado -->
+            <div class="music-player">
+                <div>
+                    <strong>Escucha el ritmo:</strong>
+                    <p id="track-status" style="font-size: 0.85rem; color: #666;">Ritmo en pausa...</p>
+                </div>
+                <button class="play-btn" id="btn-musica" onclick="toggleMusica()">▶ Simular Calipso</button>
+            </div>
+        </section>
+
+        <!-- Sección 5: Trivia Didáctica Interactiva -->
+        <section id="trivia">
+            <h2>¿Cuánto aprendiste? - Trivia Exprés</h2>
+            <div class="trivia-box">
+                <p id="pregunta-trivia"><strong>Pregunta:</strong> ¿En qué año fueron declarados los Carnavales de El Callao como Patrimonio de la Humanidad por la UNESCO?</p>
+                <div id="opciones-trivia">
+                    <button class="btn-opcion" onclick="verificarRespuesta(false, this)">A) 2010</button>
+                    <button class="btn-opcion" onclick="verificarRespuesta(true, this)">B) 2016</button>
+                    <button class="btn-opcion" onclick="verificarRespuesta(false, this)">C) 2021</button>
+                </div>
+                <div id="resultado-trivia"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Modales para los Personajes -->
+    <div id="miModal" class="modal" onclick="cerrarModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="cerrarModal()">&times;</span>
+            <h3 id="modal-titulo" style="color: var(--diablo-rojo); margin-bottom: 15px;"></h3>
+            <p id="modal-descripcion"></p>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2026 - Carnavales de El Callao. Compilación Interactiva de Contenidos Culturales.</p>
+    </footer>
+
+    <!-- Lógica de Interactividad (JavaScript) -->
+    <script>
+        // Datos de los personajes para el Modal
+        const datosPersonajes = {
+            'madama': {
+                titulo: "Las Madamas: Pilares de la Tradición",
+                descripcion: "Inspiradas en las matronas de las Antillas. Son damas respetables vestidas con trajes muy vistosos y coloridos, pañuelos amarrados a la cabeza (turbantes) y accesorios dorados. Representan la dignidad, la elegancia, la transmisión de las recetas de cocina tradicionales y los cantos."
+            },
+            'diablo': {
+                titulo: "Los Diablos: El Orden y la Conducción",
+                descripcion: "Visten de rojo y negro o rojo y blanco. Llevan máscaras gigantescas e imponentes llenas de cuernos y rasgos exagerados creadas por artesanos locales. Su función original, además de danzar, es abrir paso a las comparsas entre la multitud usando látigos (chicotillos)."
+            },
+            'medio-pinto': {
+                titulo: "Los Medio Pinto: Humor y Picaresca",
+                descripcion: "Personajes pintados completamente de negro con una mezcla de polvo de carbón, agua y melaza. Recorren las calles de madrugada y durante el día con una lata pidiendo dinero o golosinas. Su famosa frase es: '¿Medio pinto o te pinto?', divirtiendo y asustando pacíficamente a los transeúntes."
+            },
+            'minero': {
+                titulo: "Los Mineros: Homenaje al Trabajo",
+                descripcion: "Representan la principal actividad económica histórica del pueblo: la extracción artesanal del oro. Salen con sus herramientas tradicionales, picos, palas, cascos con linternas y botas de goma, recordando las raíces obreras que dieron vida a la multiculturalidad del calipso."
+            }
+        };
+
+        // Funciones del Modal
+        function abrirModal(personaje) {
+            const modal = document.getElementById('miModal');
+            document.getElementById('modal-titulo').innerText = datosPersonajes[personaje].titulo;
+            document.getElementById('modal-descripcion').innerText = datosPersonajes[personaje].descripcion;
+            modal.style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('miModal').style.display = 'none';
+        }
+
+        // Lógica de la Trivia
+        function verificarRespuesta(esCorrecto, elemento) {
+            const resultado = document.getElementById('resultado-trivia');
+            if (esCorrecto) {
+                resultado.innerHTML = "🎉 ¡Excelente! Correcto. Fue el 1 de diciembre de 2016.";
+                resultado.style.color = "#28a745";
+                elemento.style.backgroundColor = "#d4edda";
+            } else {
+                resultado.innerHTML = "❌ Inténtalo de nuevo. Pista: Mira la sección de Patrimonio.";
+                resultado.style.color = "#dc3545";
+                elemento.style.backgroundColor = "#f8d7da";
+            }
+        }
+
+        // Simulación de audio (Didáctico/Visual)
+        let reproduciendo = false;
+        let audioContext;
+        let oscilador;
+
+        function toggleMusica() {
+            const btn = document.getElementById('btn-musica');
+            const status = document.getElementById('track-status');
+            
+            if (!reproduciendo) {
+                btn.innerText = "■ Detener Ritmo";
+                btn.classList.add('playing');
+                status.innerText = "🎵 Escuchando: Simulación de percusión de Calipso rítmico (Bumbac)...";
+                reproduciendo = true;
+                
+                // Genera un sonido básico mediante la API de audio web para que el HTML sea 100% autónomo
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                oscilador = audioContext.createOscillator();
+                let ganancia = audioContext.createGain();
+                
+                oscilador.type = 'triangle';
+                oscilador.frequency.setValueAtTime(110, audioContext.currentTime); // Simula tambor bajo
+                
+                // Ritmo simulado alternando volumen
+                ganancia.gain.setValueAtTime(0.5, audioContext.currentTime);
+                oscilador.connect(ganancia);
+                ganancia.connect(audioContext.destination);
+                oscilador.start();
+            } else {
+                btn.innerText = "▶ Simular Calipso";
+                btn.classList.remove('playing');
+                status.innerText = "Ritmo en pausa...";
+                reproduciendo = false;
+                if(oscilador) oscilador.stop();
+            }
+        }
+    </script>
+</body>
+</html>
